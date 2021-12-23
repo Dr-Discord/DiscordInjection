@@ -10,13 +10,11 @@ class BrowserWindow extends electron.BrowserWindow {
     const originalPreload = opt.webPreferences.preload
     process.env.DISCORD_PRELOAD = originalPreload
     
-    opt = Object.assign(opt, {
-      webPreferences: {
-        contextIsolation: false,
-        enableRemoteModule: true,
-        nodeIntegration: true,
-        preload: join(__dirname, "preload.js")
-      }
+    opt.webPreferences = Object.assign(opt.webPreferences, {
+      contextIsolation: false,
+      enableRemoteModule: true,
+      nodeIntegration: true,
+      preload: join(__dirname, "preload.js")
     })
     super(opt)
   }
@@ -24,8 +22,10 @@ class BrowserWindow extends electron.BrowserWindow {
 
 electron.app.once("ready", () => {
   electron.session.defaultSession.webRequest.onHeadersReceived(function({ responseHeaders }, callback) {
-    delete responseHeaders["content-security-policy-report-only"]
-    delete responseHeaders["content-security-policy"]
+    for (const iterator of Object.keys(responseHeaders))
+      if (iterator.includes("content-security-policy"))
+        delete responseHeaders[iterator]
+        
     callback({ 
       cancel: false, 
       responseHeaders
