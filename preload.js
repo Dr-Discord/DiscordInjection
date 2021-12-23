@@ -13,7 +13,9 @@ else { console.error("No preload path found!") }
   }
   // DomLoaded event
   async function DomLoaded() {
+    // Add require to window
     toWindow("require", require)
+    // Remove Discods devtools alert
     await window.DiscordNative.window.setDevtoolsCallbacks(null, null)
   }
   if (window.document.readyState === "loading") window.document.addEventListener("DOMContentLoaded", DomLoaded)
