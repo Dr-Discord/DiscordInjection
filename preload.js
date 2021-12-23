@@ -6,18 +6,14 @@ if (path) { require(path) }
 else { console.error("No preload path found!") }
 
 ((window) => {
+  // Simple add item to both 'global' and 'window'
   const toWindow = (key, value) => {
-    if (key.name === undefined){
-      window[key] = value
-      global[key] = value
-    }
-    else {
-      window[key.name] = key
-      global[key.name] = key
-    }
+    window[key] = value
+    global[key] = value
   }
+  // DomLoaded event
   async function DomLoaded() {
-    toWindow(require)
+    toWindow("require", require)
     await window.DiscordNative.window.setDevtoolsCallbacks(null, null)
   }
   if (window.document.readyState === "loading") window.document.addEventListener("DOMContentLoaded", DomLoaded)
