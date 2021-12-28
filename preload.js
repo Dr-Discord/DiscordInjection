@@ -1,4 +1,4 @@
-const { webFrame } = require("electron")
+const { webFrame, contextBridge } = require("electron")
 
 // Load discords preload
 const path = process.env.DISCORD_PRELOAD
@@ -8,7 +8,7 @@ else { console.error("No preload path found!") }
 ((window) => {
   // Simple add item to both 'global' and 'window'
   const toWindow = (key, value) => {
-    window[key] = value
+    contextBridge.exposeInMainWorld(key, value)
     global[key] = value
   }
   // DomLoaded event
